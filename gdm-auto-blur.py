@@ -14,7 +14,7 @@ except ModuleNotFoundError as e:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        usage='%(prog)s [-h] [-r] -i INPUT [-o OUTPUT] -br BRIGHTNESS -b BLUR [-d]',
+        usage='%(prog)s [-h] [-u] -i INPUT [-o OUTPUT] -br BRIGHTNESS -b BLUR [-d]',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent('''
         Sets GDM background image while blurring it and changing brightness.
@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
         '''))
     parser.add_argument('-u', action='store_true', help='unset background image (set gray background)')
     parser.add_argument('-i', '--input', type=str, required=('-u' not in sys.argv), help='specify the path of the image')
-    parser.add_argument('-o', '--output', type=str, help='specify output image directory (with a name or without); input image directory by default')
+    parser.add_argument('-o', '--output', type=str, help='specify output image directory (with a file name or without); input image directory by default')
     parser.add_argument('-br', '--brightness', type=float, required=('-u' not in sys.argv), help='change brightness; from 0.00 to 1.00 and above')
     parser.add_argument('-b', '--blur', type=float, required=('-u' not in sys.argv), help='change \'sigma\' parameter of gaussian blur (radius); from 0 to 50 and above')
     parser.add_argument('-d', '--delete', action='store_true', help='delete output image after gdm background is set')
