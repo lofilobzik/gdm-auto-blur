@@ -9,7 +9,7 @@ try:
     from PIL import UnidentifiedImageError
 except ModuleNotFoundError as e:
     print(e)
-    print('Please run \'pip3 install Pillow\'')
+    print('Please run \'pip install Pillow\'')
     sys.exit()
 
 def parse_args() -> argparse.Namespace:
