@@ -12,7 +12,7 @@ Until such feature is implemented in future releases of GDM or Gnome, this scrip
 
 - [Pillow](https://pypi.org/project/Pillow/)
 ```bash
-pip3 install Pillow
+pip install Pillow
 ```
 - [gdm-tools](https://github.com/realmazharhussain/gdm-tools)
 
