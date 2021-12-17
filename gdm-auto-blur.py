@@ -17,10 +17,10 @@ def parse_args() -> argparse.Namespace:
         usage='%(prog)s [-h] [-r] -i INPUT [-o OUTPUT] -br BRIGHTNESS -b BLUR [-d]',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent('''
-        \'gdm-tools\' are required! (https://github.com/realmazharhussain/gdm-tools)
-
-        Sets GDM background image adding blur and changing brightness.
+        Sets GDM background image while blurring it and changing brightness.
         Works well with \'Blur my Shell\' extension (https://github.com/aunetx/blur-my-shell)
+        
+        \'gdm-tools\' are required! (https://github.com/realmazharhussain/gdm-tools)
         '''))
     parser.add_argument('-u', action='store_true', help='unset background image (set gray background)')
     parser.add_argument('-i', '--input', type=str, required=('-u' not in sys.argv), help='specify the path of the image')
