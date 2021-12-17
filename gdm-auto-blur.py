@@ -44,7 +44,7 @@ def main():
             return
 
         # Open image and change cwd
-        img_path = Path(args.PATH)
+        img_path = Path(args.input)
         img = Image.open(img_path)
 
         # Analyze output path
