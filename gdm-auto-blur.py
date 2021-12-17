@@ -43,7 +43,7 @@ def main():
             os.system(cmd)
             return
 
-        # Open image and change cwd
+        # Open image
         img_path = Path(args.input)
         img = Image.open(img_path)
 
@@ -75,7 +75,8 @@ def main():
         print(f'Image saved as {output_path}, running \'{cmd}\'')
 
         os.system(cmd)
-
+        
+        # Optionally delete an image
         if args.delete:
             print('Image deleted')
             output_path.unlink(missing_ok=True)
