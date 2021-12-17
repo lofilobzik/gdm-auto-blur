@@ -1,6 +1,8 @@
 # gdm-auto-blur
 
-Sets GDM background image adding blur and changing brightness. Works well with [Blur my Shell](https://github.com/aunetx/blur-my-shell) extension
+Sets GDM background image while blurring it and changing brightness.
+
+Works well with [Blur my Shell](https://github.com/aunetx/blur-my-shell) extension. (Brightness and blur parameters correnspond to 'Blur my Shell' ones. Not perfectly, however, but closely)
 
 Until such feature is implemented in future releases of GDM or Gnome, this script serves as a nice workaround
 
@@ -30,7 +32,7 @@ cd ~/.local/bin/
 chmod +x gdm-auto-blur
 ```
 ## Usage
-Brightness and blur parameters correnspond to 'Blur my Shell' ones (not perfect, but closely)
+
 ```bash
 gdm-auto-blur -i path/to/picture.jpg -br 0.5 -b 20
 ```
