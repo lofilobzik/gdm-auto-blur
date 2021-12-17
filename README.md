@@ -30,7 +30,7 @@ cd ~/.local/bin/
 chmod +x gdm-auto-blur
 ```
 ## Usage
-Brightness and blur parameters closely correnspond to 'Blur my Shell' ones
+Brightness and blur parameters directly correnspond to 'Blur my Shell' ones
 ```bash
 gdm-auto-blur -i path/to/picture.jpg -br 0.5 -b 20
 ```
