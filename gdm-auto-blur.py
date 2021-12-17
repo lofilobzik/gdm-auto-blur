@@ -54,9 +54,9 @@ def main():
             output_path = Path(args.output)
 
         if output_path.is_dir():
-            output_path = output_path / f'{img_path.stem}-blur{img_path.suffix}'
+            output_path = output_path / f'{img_path.stem}-blur.png'
         else:
-            output_path = output_path.with_suffix(img_path.suffix)
+            output_path = output_path.with_suffix('.png')
 
         # Read amount of brightness and blur
         brightness = args.brightness
