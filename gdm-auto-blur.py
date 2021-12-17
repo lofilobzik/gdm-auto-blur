@@ -21,8 +21,7 @@ def parse_args() -> argparse.Namespace:
 
         Sets GDM background image adding blur and changing brightness.
         Works well with \'Blur my Shell\' extension (https://github.com/aunetx/blur-my-shell)
-        '''),
-        epilog='Parameters correspond to \'Blur my Shell\' ones, however additional tweaking may be needed')
+        '''))
     parser.add_argument('-u', action='store_true', help='unset background image (set gray background)')
     parser.add_argument('-i', '--input', type=str, required=('-u' not in sys.argv), help='specify the path of the image')
     parser.add_argument('-o', '--output', type=str, help='specify output image directory (with a name or without); input image directory by default')
@@ -60,7 +59,10 @@ def main():
 
         # Read amount of brightness and blur
         brightness = args.brightness
-        blur = round(args.blur / 50 * 200)
+        
+        width = img.size[0]
+        const = args.blur / 1920
+        blur = round(width * const)
 
         # Apply filters
         img = img.filter(ImageFilter.GaussianBlur(radius = blur))
