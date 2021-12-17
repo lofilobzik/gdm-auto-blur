@@ -73,8 +73,8 @@ def main():
         # Save image and run a command
         img.save(output_path)
 
-        cmd = f'set-gdm-theme set -b {output_path}'
-        print(f'Image saved as {output_path}, running \'{cmd}\'')
+        cmd = f'set-gdm-theme set -b \'{output_path}\''
+        print(f'Image saved as \'{output_path}\', running \'{cmd}\'')
 
         os.system(cmd)
         
