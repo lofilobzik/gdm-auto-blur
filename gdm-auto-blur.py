@@ -22,7 +22,7 @@ BLUR = 20
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        usage='%(prog)s [-h] [-u] [-i INPUT] [-o OUTPUT] [-br BRIGHTNESS] [-b BLUR] [-p]',
+        usage='%(prog)s [-h] [-u] [-i INPUT] [-br BRIGHTNESS] [-b BLUR] [-p]',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent('''
         Sets GDM background image while blurring it and changing brightness.
@@ -34,8 +34,6 @@ def parse_args() -> argparse.Namespace:
                         help='unset background image (set gray background)')
     parser.add_argument('-i', '--input', type=str,
                         help='specify the path of the image')
-    parser.add_argument('-o', '--output', type=str,
-                        help='specify output image directory (with a file name or without)')
     parser.add_argument('-br', '--brightness', type=float,
                         help='change brightness; from 0.00 to 1.00 and above')
     parser.add_argument('-b', '--blur', type=float,
@@ -77,17 +75,8 @@ def main():
         print(e)
         return
 
-    #  Analyze output path
-    if type(args.output) is NoneType:
-        temp = tempfile.NamedTemporaryFile(suffix='.png')
-        output_path = temp.name
-    else:
-        output_path = Path(args.output)
-
-        if output_path.is_dir():
-            output_path = output_path / f'{img_path.stem}-blur.png'
-        else:
-            output_path = output_path.with_suffix('.png')
+    temp = tempfile.NamedTemporaryFile(suffix='.png')
+    output_path = temp.name
 
     # Read amounts of brightness and blur
     brightness = BRIGHTNESS if type(args.brightness) is NoneType else args.brightness
@@ -107,13 +96,11 @@ def main():
     # Save image and run a command
     img.save(output_path)
 
-    set_cmd = f'set-gdm-theme set -b \'{output_path}\''
-    print(f'Image saved as \'{output_path}\'')
+    set_cmd = f'set-gdm-theme set -b {output_path}'
     print(f'Parameters: brightness: {brightness}, blur: {blur}')
     print(f'Running: {set_cmd}')
 
     subprocess.run(set_cmd.split())
-
 
 if __name__ == '__main__':
     main()
