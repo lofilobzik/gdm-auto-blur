@@ -31,12 +31,19 @@ cp gdm-auto-blur.py ~/.local/bin/gdm-auto-blur
 cd ~/.local/bin/
 chmod +x gdm-auto-blur
 ```
+
 ## Usage
 
+Just run
+
 ```bash
-gdm-auto-blur -i path/to/picture.jpg -br 0.5 -b 20
+gdm-auto-blur
 ```
-Run `gdm-auto-blur -h` for more options
+With options
+
+```bash
+gdm-auto-blur -i path/to/picture.jpg -br 0.5 -b 20 -p
+```
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
