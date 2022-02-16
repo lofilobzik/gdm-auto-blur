@@ -16,6 +16,10 @@ pip install Pillow
 ```
 - [gdm-tools](https://github.com/realmazharhussain/gdm-tools)
 
+- blur-my-shell (optional)
+
+- gsettings
+
 ## Installation
 
 Download repo as a zip or clone it somewhere
