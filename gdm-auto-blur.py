@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from cgitb import text
 import sys
 import argparse
 import textwrap
@@ -10,7 +11,6 @@ from types import NoneType
 
 try:
     from PIL import Image, ImageFilter, ImageEnhance
-
 except ModuleNotFoundError as e:
     print(e)
     print('Please run \'pip3 install Pillow\'')
@@ -18,6 +18,17 @@ except ModuleNotFoundError as e:
 
 BRIGHTNESS = 0.5
 BLUR = 20
+
+# Take values from blur-my-shell
+base_cmd = 'gsettings --schemadir ~/.local/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas/ get org.gnome.shell.extensions.blur-my-shell'
+sigma_cmd = base_cmd + ' sigma'
+brightness_cmd = base_cmd + ' brightness'
+
+try:
+    BRIGHTNESS = float(subprocess.run(brightness_cmd, stdout=subprocess.PIPE, shell=True, text=True).stdout.strip())
+    BLUR = float(subprocess.run(sigma_cmd, stdout=subprocess.PIPE, shell=True, text=True).stdout.strip())
+except ValueError:
+    print(f'\'blur-my-shell\' not installed, using other values')
 
 
 def parse_args() -> argparse.Namespace:
@@ -49,23 +60,20 @@ def main():
 
     # Unset image and exit
     if args.unset:
-        cmd = f'set-gdm-theme set -b none'
-        print(f'Unsetting image, running: {cmd}')
-        subprocess.run(cmd.split())
+        print('Unsetting image')
+        subprocess.run(['set-gdm-theme', 'set', '-b', 'none'])
         return
 
     # Open image
     if type(args.input) is NoneType:
-        get_cmd = 'gsettings get org.gnome.desktop.background picture-uri'
-        output = subprocess.run(
-            get_cmd.split(), stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+        get_cmd = ['gsettings', 'get', 'org.gnome.desktop.background', 'picture-uri']
+        output = subprocess.run(get_cmd, stdout=subprocess.PIPE, text=True).stdout.strip()
 
         if output[1:8] == 'file://':
             img_path = Path(output[8:-1])
         else:
             print('Please set your wallpaper from gnome-settings')
             return
-
     else:
         img_path = Path(args.input)
 
@@ -80,8 +88,11 @@ def main():
 
     # Read amounts of brightness and blur
     brightness = BRIGHTNESS if type(args.brightness) is NoneType else args.brightness
-    blur = round(BLUR if type(args.blur) is NoneType else args.blur / 1920 * img.size[0])
-
+    blur = BLUR if type(args.blur) is NoneType else args.blur
+    blur_used = round(blur * (img.size[0] / 1920) * (img.size[1] / 1080), 4)
+    
+    print(f'Parameters: brightness: {brightness}, blur: {blur if blur==blur_used else f"{blur} ({blur_used})"}')
+    
     # Apply filters
     img = img.filter(ImageFilter.GaussianBlur(radius=blur))
     img = img.filter(ImageFilter.SMOOTH_MORE)
@@ -96,11 +107,8 @@ def main():
     # Save image and run a command
     img.save(output_path)
 
-    set_cmd = f'set-gdm-theme set -b {output_path}'
-    print(f'Parameters: brightness: {brightness}, blur: {blur}')
-    print(f'Running: {set_cmd}')
-
-    subprocess.run(set_cmd.split())
+    set_cmd = ['set-gdm-theme', 'set', '-b', output_path]
+    subprocess.run(set_cmd)
 
 if __name__ == '__main__':
     main()
