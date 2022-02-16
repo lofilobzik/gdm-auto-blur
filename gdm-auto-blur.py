@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from cgitb import text
 import sys
 import argparse
 import textwrap
