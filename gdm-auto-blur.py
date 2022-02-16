@@ -88,9 +88,9 @@ def main():
     # Read amounts of brightness and blur
     brightness = BRIGHTNESS if type(args.brightness) is NoneType else args.brightness
     blur = BLUR if type(args.blur) is NoneType else args.blur
-    blur_used = round(blur * (img.size[0] / 1920) * (img.size[1] / 1080), 4)
+    blur_used = blur * (img.size[0] / 1920) * (img.size[1] / 1080)
     
-    print(f'Parameters: brightness: {brightness}, blur: {blur if blur==blur_used else f"{blur} ({blur_used})"}')
+    print(f'Parameters: brightness: {brightness}, blur: {blur if blur==blur_used else f"{blur} ({round(blur_used, 3)})"}')
     
     # Apply filters
     img = img.filter(ImageFilter.GaussianBlur(radius=blur))
@@ -106,8 +106,7 @@ def main():
     # Save image and run a command
     img.save(output_path)
 
-    set_cmd = ['set-gdm-theme', 'set', '-b', output_path]
-    subprocess.run(set_cmd)
+    subprocess.run(['set-gdm-theme', 'set', '-b', output_path])
 
 if __name__ == '__main__':
     main()
