@@ -6,6 +6,9 @@ Works well with [Blur my Shell](https://github.com/aunetx/blur-my-shell) extensi
 
 Until such feature is implemented in future releases of GDM or Gnome, this script serves as a nice workaround
 
+### Update
+[gdm-settings](https://github.com/realmazharhussain/gdm-settings) is a thing now, but still no blur ;(
+
 ## Requirements
 
 - Python 3
