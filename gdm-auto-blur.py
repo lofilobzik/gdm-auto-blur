@@ -15,30 +15,12 @@ except ModuleNotFoundError as e:
     print('Please run \'pip3 install Pillow\'')
     sys.exit()
 
-BRIGHTNESS = 0.5
-BLUR = 20
-
-# Take values from blur-my-shell
-base_cmd = 'gsettings --schemadir ~/.local/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas/ get org.gnome.shell.extensions.blur-my-shell'
-sigma_cmd = base_cmd + ' sigma'
-brightness_cmd = base_cmd + ' brightness'
-
-try:
-    BRIGHTNESS = float(subprocess.run(brightness_cmd, stdout=subprocess.PIPE, shell=True, text=True).stdout.strip())
-    BLUR = float(subprocess.run(sigma_cmd, stdout=subprocess.PIPE, shell=True, text=True).stdout.strip())
-except ValueError:
-    print(f'\'blur-my-shell\' not installed, using other values')
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         usage='%(prog)s [-h] [-u] [-i INPUT] [-br BRIGHTNESS] [-b BLUR] [-p]',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent('''
-        Sets GDM background image while blurring it and changing brightness.
-        Works well with \'Blur my Shell\' extension (https://github.com/aunetx/blur-my-shell)
-        
-        \'gdm-tools\' are required! (https://github.com/realmazharhussain/gdm-tools)
+        Blurs and sets gdm background.
         '''))
     parser.add_argument('-u', '--unset', action='store_true',
                         help='unset background image (set gray background)')
@@ -85,20 +67,51 @@ def main():
     temp = tempfile.NamedTemporaryFile(suffix='.png')
     output_path = temp.name
 
-    # Read amounts of brightness and blur
-    brightness = BRIGHTNESS if type(args.brightness) is NoneType else args.brightness
-    blur = BLUR if type(args.blur) is NoneType else args.blur
-    blur_used = blur * (img.size[0] / 1920) * (img.size[1] / 1080)
+    # Determine which values to use
+    if type(args.brightness) is not NoneType and type(args.blur) is not NoneType:
+        brightness = args.brightness
+        blur = args.blur
     
-    print(f'Parameters: brightness: {brightness}, blur: {blur if blur==blur_used else f"{blur} ({round(blur_used, 3)})"}')
+    else:
+        base_cmd = 'gsettings --schemadir ~/.local/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas/ get org.gnome.shell.extensions.blur-my-shell'
+        sigma_cmd = base_cmd + ' sigma'
+        brightness_cmd = base_cmd + ' brightness'
+
+        try:
+            brightness = float(subprocess.run(brightness_cmd, stdout=subprocess.PIPE, shell=True, text=True).stdout.strip())
+            blur = float(subprocess.run(sigma_cmd, stdout=subprocess.PIPE, shell=True, text=True).stdout.strip())
+        except ValueError:
+            print(f'\'blur-my-shell\' is not installed, using other values')
+            brightness = 0.5
+            blur = 20
+
+    if type(args.brightness) is not NoneType:
+        brightness = args.brightness
+
+    if type(args.blur) is not NoneType:
+        blur = args.blur
     
+    print(f'Parameters: brightness: {brightness}, blur: {round(blur, 3)}')
+
+    # Determine screen size
+    import tkinter
+    root = tkinter.Tk()
+    root.withdraw()
+    screen_width, screen_height = root.winfo_screenwidth(), root.winfo_screenheight()
+    
+    # Resize image (to apply filters properly)
+    if screen_width > screen_height:
+        proportional_width = round(screen_height * img.size[0] / img.size[1])
+        img = img.resize((proportional_width, screen_height))
+        img = img.crop((round(proportional_width / 2 - screen_width / 2), 0, round(proportional_width / 2 + screen_width / 2), screen_height))
+
     # Apply filters
     img = img.filter(ImageFilter.GaussianBlur(radius=blur))
     img = img.filter(ImageFilter.SMOOTH_MORE)
     img_obj = ImageEnhance.Brightness(img)
     img = img_obj.enhance(brightness)
 
-    # Preview the image
+    # Preview the image if needed
     if args.preview:
         img.show()
         return
@@ -107,6 +120,8 @@ def main():
     img.save(output_path)
 
     subprocess.run(['set-gdm-theme', 'set', '-b', output_path])
+
+    print('Done!')
 
 if __name__ == '__main__':
     main()
