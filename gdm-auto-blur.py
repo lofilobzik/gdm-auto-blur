@@ -64,6 +64,8 @@ def main():
         print(e)
         return
 
+    print(f'Using image \'{img_path}\'')
+
     temp = tempfile.NamedTemporaryFile(suffix='.png')
     output_path = temp.name
 
