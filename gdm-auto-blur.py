@@ -6,7 +6,12 @@ import textwrap
 import tempfile
 import subprocess
 from pathlib import Path
-from types import NoneType
+
+try:
+    # Python 3.10+
+    from types import NoneType
+except:
+    NoneType = type(None)
 
 try:
     from PIL import Image, ImageFilter, ImageEnhance
