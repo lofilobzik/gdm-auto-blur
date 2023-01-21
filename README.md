@@ -17,6 +17,8 @@ Until such feature is implemented in future releases of GDM or Gnome, this scrip
 ```bash
 pip install Pillow
 ```
+- Tkinter
+
 - [gdm-tools](https://github.com/realmazharhussain/gdm-tools)
 
 - blur-my-shell (optional)
