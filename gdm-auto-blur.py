@@ -2,7 +2,6 @@
 
 import sys
 import argparse
-import textwrap
 import tempfile
 import subprocess
 from pathlib import Path
@@ -10,7 +9,7 @@ from pathlib import Path
 try:
     # Python 3.10+
     from types import NoneType
-except:
+except ImportError:
     NoneType = type(None)
 
 try:
@@ -24,9 +23,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         usage='%(prog)s [-h] [-u] [-i INPUT] [-br BRIGHTNESS] [-b BLUR] [-p]',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=textwrap.dedent('''
-        Blurs and sets gdm background.
-        '''))
+        description="Blurs and sets gdm background."
+        )
     parser.add_argument('-u', '--unset', action='store_true',
                         help='unset background image (set gray background)')
     parser.add_argument('-i', '--input', type=str,
@@ -131,4 +129,7 @@ def main():
     print('Done!')
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
